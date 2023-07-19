@@ -45,13 +45,6 @@ app.get('/api/persons/:id', (request, response) => {
   });
 });
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
-
-  response.status(204).end();
-});
-
 const generateId = () => {
   const randomId = Math.floor(Math.random() * 1000);
   return randomId;
@@ -80,9 +73,27 @@ app.post('/api/persons', (request, response) => {
   }
 });
 
-//app.delete('./api/persons/:id', (request,response) => {
-//Person.findByIdAndRemove(request.params.id)
-//})
+app.delete('/api/persons/:id', (request, response, next) => {
+  console.log(request);
+  Person.findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
+});
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  next(error);
+};
+
+// tämä tulee kaikkien muiden middlewarejen rekisteröinnin jälkeen!
+app.use(errorHandler);
 
 morgan.token('id', function getId(req) {
   return req.id;
