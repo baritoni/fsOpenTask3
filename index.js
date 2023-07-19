@@ -15,7 +15,7 @@ morgan.token('body', (req) => {
   return JSON.stringify(req.body);
 });
 
-const url = `mongodb+srv://fullstack:<password>@cluster0.z1hybnq.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
+//const url = `mongodb+srv://fullstack:<password>@cluster0.z1hybnq.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
 
 //mongoose.set('strictQuery', false);
 //mongoose.connect(url);
