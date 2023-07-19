@@ -26,7 +26,7 @@ let numberOfPersons = persons.length;
 
 let dateTime = Date();
 
-app.get('/api/people', (request, response) => {
+app.get('/api/persons', (request, response) => {
   Person.find({}).then((person) => {
     response.json(person);
     console.log(person);
@@ -39,7 +39,7 @@ app.get('/info', (request, response) => {
   );
 });
 
-app.get('/api/people/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response) => {
   Person.findById(request.params.id).then((person) => {
     response.json(person);
   });
@@ -65,20 +65,19 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({
       error: 'Content missing'
     });
-  } else if (personExisted) {
-    return response.status(400).json({
-      error: 'Person already exists'
+  } //else if (personExisted) {
+  //return response.status(400).json({
+  //error: 'Person already exists'
+  //});
+  else {
+    const person = new Person({
+      name: body.name,
+      number: body.number
+    });
+    person.save().then((savedPerson) => {
+      response.json(savedPerson);
     });
   }
-
-  const person = {
-    name: body.name,
-    number: body.number
-  };
-
-  persons = persons.concat(person);
-
-  response.json(person);
 });
 
 morgan.token('id', function getId(req) {
