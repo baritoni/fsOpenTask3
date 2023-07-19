@@ -1,7 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const Person = require('./models/person');
 
 app.use(express.json());
 app.use(morgan(':method :url :body'));
@@ -12,35 +15,22 @@ morgan.token('body', (req) => {
   return JSON.stringify(req.body);
 });
 
-let persons = [
-  {
-    name: 'Arto Hellas',
-    number: '050-2345897',
-    id: 1
-  },
-  {
-    name: 'Ada Lovelace',
-    number: '045-7894562',
-    id: 2
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: 3
-  },
-  {
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-    id: 4
-  }
-];
+const url = `mongodb+srv://fullstack:<password>@cluster0.z1hybnq.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
+
+//mongoose.set('strictQuery', false);
+//mongoose.connect(url);
+
+let persons = [];
 
 let numberOfPersons = persons.length;
 
 let dateTime = Date();
 
-app.get('/api/persons', (request, response) => {
-  response.json(persons);
+app.get('/api/people', (request, response) => {
+  Person.find({}).then((person) => {
+    response.json(person);
+    console.log(person);
+  });
 });
 
 app.get('/info', (request, response) => {
@@ -49,15 +39,10 @@ app.get('/info', (request, response) => {
   );
 });
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
+app.get('/api/people/:id', (request, response) => {
+  Person.findById(request.params.id).then((person) => {
     response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  });
 });
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -88,8 +73,7 @@ app.post('/api/persons', (request, response) => {
 
   const person = {
     name: body.name,
-    number: body.number,
-    id: generateId()
+    number: body.number
   };
 
   persons = persons.concat(person);

@@ -7,7 +7,7 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2];
 
-const url = `mongodb+srv://fullstack:<password>@cluster0.z1hybnq.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
+const url = `mongodb+srv://fullstack:salasana@cluster0.z1hybnq.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
 
 mongoose.set('strictQuery', false);
 mongoose.connect(url);
@@ -33,13 +33,15 @@ if (process.argv.length === 3) {
     number: process.argv[4]
   });
 
+  /*
   person.save().then((result) => {
     console.log(`Added ${person.name} number ${person.number} to phonebook`);
     mongoose.connection.close();
     console.log(process.argv);
   });
-}
 
+  */
+}
 /*
 const person = new Person({
   name: 'Ressu Redford',
