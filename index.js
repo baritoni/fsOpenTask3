@@ -80,6 +80,10 @@ app.post('/api/persons', (request, response) => {
   }
 });
 
+//app.delete('./api/persons/:id', (request,response) => {
+//Person.findByIdAndRemove(request.params.id)
+//})
+
 morgan.token('id', function getId(req) {
   return req.id;
 });
