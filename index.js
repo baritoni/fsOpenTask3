@@ -67,7 +67,7 @@ const generateId = () => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body;
-  const personExisted = persons.find((person) => person.name === body.name);
+  //const personExisted = persons.find((person) => person.name === body.name);
   // console.log('body: ', body);
   if (!body.name || !body.number) {
     return response.status(400).json({
