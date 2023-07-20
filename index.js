@@ -20,23 +20,38 @@ morgan.token('body', (req) => {
 //mongoose.set('strictQuery', false);
 //mongoose.connect(url);
 
-let persons = [];
+let persons = () => {
+  app.get('/api/persons', (response) => {
+    Person.find({}).then((person) => {
+      response.json(person.length);
+    });
+  });
+};
 
-let numberOfPersons = persons.length;
+const count = () => {
+  console.log('documents: ', Person);
+};
+
+count();
 
 let dateTime = Date();
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then((person) => {
     response.json(person);
-    console.log(person);
   });
 });
 
 app.get('/info', (request, response) => {
-  response.send(
-    `<p>Phonebook has info for ${numberOfPersons} people </p> <p>${dateTime}</p>`
-  );
+  Person.countDocuments()
+    .then((count) => {
+      response.send(
+        `<p>Phonebook has info for ${count} people </p> <p>${dateTime}</p>`
+      );
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 });
 
 app.get('/api/persons/:id', (request, response) => {
@@ -78,6 +93,21 @@ app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
     .then((result) => {
       response.status(204).end();
+    })
+    .catch((error) => next(error));
+});
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body;
+
+  const person = {
+    name: body.name,
+    number: body.number
+  };
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatePerson) => {
+      response.json(updatePerson);
     })
     .catch((error) => next(error));
 });
